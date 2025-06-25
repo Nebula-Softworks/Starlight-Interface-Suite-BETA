@@ -2129,7 +2129,7 @@ local buildAttempts = 0
 local correctBuild = false
 local warned
 
-StarlightUI.Name = (((getgenv and getgenv().InterfaceName) or StarlightUI.Name) or "Starlight Interface Suite")
+--StarlightUI.Name = (((getgenv and getgenv().InterfaceName) or StarlightUI.Name) or "Starlight Interface Suite")
 Starlight.Instance = StarlightUI
 
 repeat
