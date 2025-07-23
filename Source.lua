@@ -101,8 +101,10 @@ local Starlight = {
 	WindowKeybind = "K",
 	Minimized = false,
 	Maximized = false,
+	NotificationsOpen = false,
 
 	Window = nil,
+	Notifications = nil,
 	Instance = nil,
 	OnDestroy = nil,
 
@@ -794,6 +796,7 @@ local function AddToolTip(InfoStr, HoverInstance)
 				if hoverTime >= threshold then
 					updateTooltipPos()
 					if not String.IsEmptyOrNull(label.Text) then
+						RunService.RenderStepped:Wait()
 						tooltip.Visible = true
 					end
 				end
@@ -1028,7 +1031,7 @@ function Starlight:Notification(data)
 		local creationTime = tick()
 
 		-- Notification Object Creation
-		local newNotification = StarlightUI.Notifications.Template:Clone()
+		local newNotification = Resources.Elements.NotificationTemplate:Clone()
 		newNotification.Name = data.Title
 		newNotification.Parent = StarlightUI.Notifications
 		newNotification.LayoutOrder = #StarlightUI.Notifications:GetChildren()
@@ -1092,19 +1095,21 @@ function Starlight:Notification(data)
 		task.wait(data.Duration or waitDuration)
 
 		pcall(function()
-			newNotification.Icon.Visible = false
-			TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
-			TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
-			TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
-			TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-			TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-			TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+			if not Starlight.NotificationsOpen then
+				newNotification.Icon.Visible = false
+				TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+				TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+				TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
+				TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+				TweenService:Create(newNotification.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+				TweenService:Create(newNotification.Time, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 
-			TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
+				TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, 0)}):Play()
 
-			Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
-				newNotification.Visible = false
-			end, TweenInfo.new(1, Enum.EasingStyle.Exponential))
+				Tween(newNotification, {Size = UDim2.new(1, -90, 0, -StarlightUI.Notifications:FindFirstChild("UIListLayout").Padding.Offset)}, function()
+					newNotification.Visible = false
+				end, TweenInfo.new(1, Enum.EasingStyle.Exponential))
+			end
 		
 			CollectionService:AddTag(newNotification, "ExpiredNotification")
 		end)
@@ -3787,11 +3792,11 @@ function Starlight:CreateWindow(WindowSettings)
 						end
 						
 						NestedElement.Instances[1]:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
-							NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 40)
-
+							NestedElement.Instances[2].Position = UDim2.fromOffset(math.ceil(NestedElement.Instances[1].AbsolutePosition.X), math.ceil(NestedElement.Instances[1].AbsolutePosition.Y) + 35)
+							
 							Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
-								NestedElement.Instances[2].Visible = false
 								Tween(NestedElement.Instances[1].Icon, {Rotation = 0})
+								NestedElement.Instances[2].Visible = false
 							end, tweenInfo(nil, nil, 0.18))
 						end)
 
@@ -3803,9 +3808,9 @@ function Starlight:CreateWindow(WindowSettings)
 
 						NestedElement.Instances[1].Interact.MouseButton1Click:Connect(function()
 							if NestedElement.Instances[2].Visible then
+								Tween(NestedElement.Instances[1].Icon, {Rotation = 0})
 								Tween(NestedElement.Instances[2], {Size = UDim2.fromOffset(NestedElement.Instances[2].Size.X.Offset, 0)}, function()
 									NestedElement.Instances[2].Visible = false
-									Tween(NestedElement.Instances[1].Icon, {Rotation = 0})
 								end, tweenInfo(nil, nil, 0.18))
 							else
 								NestedElement.Instances[2].Visible = true
@@ -4142,17 +4147,16 @@ function Starlight:CreateWindow(WindowSettings)
 	--// ENDSUBSECTION
 
 	--// SUBSECTION : Window Functionability
-	local notificationsOpen = false
 	do
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseEnter"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Resources[Starlight.CurrentTheme]['Fore_Medium'].Value})
+			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Medium'].Value})
 		end)
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseLeave"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Resources[Starlight.CurrentTheme]['Fore_Dark'].Value})
+			Tween(mainWindow.Content.Topbar.NotificationCenterIcon, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Dark'].Value})
 		end)
 		
 		mainWindow.Content.Topbar.NotificationCenterIcon["MouseButton1Click"]:Connect(function()
-			if notificationsOpen then
+			if Starlight.NotificationsOpen then
 				for i,newNotification in pairs(CollectionService:GetTagged("ExpiredNotification")) do
 					
 					newNotification.Icon.Visible = false
@@ -4205,17 +4209,17 @@ function Starlight:CreateWindow(WindowSettings)
 					
 				end
 				
-				--StarlightUI.Notifications.CanvasPosition = Vector2.new(0,0)
+				-- StarlightUI.Notifications.CanvasPosition = Vector2.new(0,0)
 			end
-			notificationsOpen = not notificationsOpen
+			Starlight.NotificationsOpen = not Starlight.NotificationsOpen
 		end)
 
 
 		mainWindow.Content.Topbar.Search["MouseEnter"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources[Starlight.CurrentTheme]['Fore_Medium'].Value})
+			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Medium'].Value})
 		end)
 		mainWindow.Content.Topbar.Search["MouseLeave"]:Connect(function()
-			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources[Starlight.CurrentTheme]['Fore_Dark'].Value})
+			Tween(mainWindow.Content.Topbar.Search, {ImageColor3 = Resources.Themes[Starlight.CurrentTheme]['Fore_Dark'].Value})
 		end)
 
 		for _, Button in ipairs(mainWindow.Content.Topbar.Controls:GetChildren()) do
@@ -4500,6 +4504,8 @@ bind:AddBind({
 --		end
 --	end,
 --})
+
+g:CreateDivider()
 
 local dropdown = g:CreateLabel({Name = "Dropdown"}, "lbldrpdwn"):AddDropdown({
 	Options = {"hi","heeh","huh"},
