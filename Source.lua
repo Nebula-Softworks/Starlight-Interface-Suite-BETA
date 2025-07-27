@@ -91,7 +91,7 @@ local Release = "Prerelease Beta 3"
 
 local Starlight = {
 	Folder = "Starlight Interface Suite",
-	InterfaceBuild = "BTR3", -- Beta Testing Release 3
+	InterfaceBuild = "B3B6", -- Beta 3 Build 6
 
 	Options = {},
 	CurrentTheme = "Default",
@@ -136,7 +136,7 @@ local Camera = workspace.CurrentCamera
 local Mouse = Player:GetMouse()
 
 local isStudio = RunService:IsStudio() or false
-local website = "github.com/Nebula-Softworks"
+local website = "nebulasoftworks.xyz"
 
 local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
@@ -144,7 +144,6 @@ local Request = (syn and syn.request) or (fluxus and fluxus.request) or (http an
 local String = {}
 local Table = {}
 local Color = {}
-local Tween = {}
 --//ENDSUBSECTION
 
 local function tweenInfo(style : string?, direction : string?, time : number?) 
@@ -4349,17 +4348,17 @@ local ts = win:CreateTabSection()
 local ts2 = win:CreateTabSection("Tab Section Example")
 
 local t = ts:CreateTab({
-	Name = "hi",
+	Name = "Elements",
 	Columns = 2,
 	Icon = NebulaIcons:GetIcon("broadcast", "Phosphor"),
 }, "hi")
 local t2 = ts2:CreateTab({
-	Name = "hi2",
+	Name = "Premium Tab",
 	Columns = 1,
 	Icon = NebulaIcons:GetIcon("sparkle", "Material"),
 }, "hi2")
 local t3 = ts2:CreateTab({
-	Name = "hi3",
+	Name = "Extra Tab",
 	Columns = 2
 }, "hi3")
 
@@ -4465,12 +4464,10 @@ g2:CreateInput({
 	Callback = function() end
 }, "nmrcinpt")
 
-local hello = g2:CreateLabel({
+g2:CreateLabel({
 	Tooltip = "Hi",
 	Name = "Label"
-}, "lblbnd")
-
-hello:AddBind({
+}, "lblbnd"):AddBind({
 	CurrentValue = "Q",
 	HoldToInteract = true,
 	Tooltip = "Hi",
@@ -4479,15 +4476,15 @@ hello:AddBind({
 	end,
 }, "bnd")
 
-local bind = g2:CreateToggle({
+g2:CreateToggle({
 	Name = "Toggle Bind",
 	CurrentValue = false,
 	Tooltip = "Hi",
+	Style = 2,
 	Callback = function(v)
 		print(v)
 	end,
-}, "bndprnt")
-bind:AddBind({
+}, "bndprnt"):AddBind({
 	CurrentValue = "C",
 	Tooltip = "Hi",
 	SyncToggleState = true
@@ -4526,7 +4523,7 @@ local dropdown2 = g:CreateLabel({Name = "Dropdown MultiOptions"}, "lbldrpdwn2"):
 	end,
 }, 'drpdwn2')
 
-local dropdown3 = g2:CreateToggle({Name = "Dropdown On Toggle",CurrentValue = false,Callback = function() end, Style=2}, "tggldrpdwn"):AddDropdown({
+local dropdown3 = g2:CreateToggle({Name = "Dropdown On Toggle",CurrentValue = false,Callback = function() end}, "tggldrpdwn"):AddDropdown({
 	Options = {"hi","heeh","huh"},
 	CurrentOption = {"wsp", "huh"},
 	Tooltip = "Hi",
@@ -4553,7 +4550,6 @@ g:CreateParagraph({
 I also grow bigger or smaller depending on how much text is in my body! 
 Like this, i am a much bigger paragraph than the other one! i also support multi lines ]]
 }, "prgrph2")
---]-]
 
 Starlight:Notification({
 	Title = "Hi",
@@ -4562,6 +4558,7 @@ I also grow bigger or smaller depending on how much text is in my body!
 Like this, i am a much bigger paragraph than the other one! i also support multi lines ]],
 	Icon = NebulaIcons:GetIcon("notifications_active", "Material")
 })
+--]-]
 
 --// ENDSUBSECTION
 
