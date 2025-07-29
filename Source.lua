@@ -980,7 +980,7 @@ StarlightUI.MainWindow.Visible = false
 StarlightUI.MainWindow.AnchorPoint = Vector2.zero
 StarlightUI.MainWindow.Position = UDim2.fromOffset(
 	Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
-	(Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2) - 45
+	(Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2) - 50
 )
 
 --// SUBSECTION : Interface Variables
@@ -1221,7 +1221,7 @@ function Starlight:CreateWindow(WindowSettings)
 		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(mainWindow.Size.X.Offset - 65, mainWindow.Size.Y.Offset - 55) or mainWindow.Size
 		StarlightUI.MainWindow.Position = UDim2.fromOffset(
 			Camera.ViewportSize.X / 2 - StarlightUI.MainWindow.Size.X.Offset / 2,
-			(Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2) - 45
+			(Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2) - 50
 		)
 		StarlightUI.Drag.Position = WindowSettings.LoadingEnabled and UDim2.new(0.5,0,0.5,270) or UDim2.new(0.5,0,0.5,290)
 
@@ -1279,7 +1279,7 @@ function Starlight:CreateWindow(WindowSettings)
 				Size = UDim2.fromOffset(mainWindow.Size.X.Offset + 65, mainWindow.Size.Y.Offset + 55),
 				Position = UDim2.fromOffset(
 					Camera.ViewportSize.X / 2 - (mainWindow.Size.X.Offset + 65) / 2,
-					(Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2) - 45
+					(Camera.ViewportSize.Y / 2 - StarlightUI.MainWindow.Size.Y.Offset / 2) - 50
 				)
 			})
 			Tween(StarlightUI.Drag, {
